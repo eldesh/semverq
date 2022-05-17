@@ -22,9 +22,9 @@ fn main() -> Result<()> {
     let m = Command::new("semverq")
         .version(env!("CARGO_PKG_VERSION"))
         .about("A cli utility for validating semver, accessing semver structure and converting to json.")
-        .arg(Arg::new("input").short('i').takes_value(true))
-        .arg(Arg::new("to-json").short('j'))
-        .arg(Arg::new("query").short('q').takes_value(true).conflicts_with("to-json"))
+        .arg(Arg::new("input").short('i').takes_value(true).help("version string"))
+        .arg(Arg::new("to-json").short('j').help("convert the input string to a json"))
+        .arg(Arg::new("query").short('q').takes_value(true).conflicts_with("to-json").help("expand accessors"))
         .get_matches();
 
     let version = if let Some(input) = m.value_of("input") {
