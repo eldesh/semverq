@@ -10,7 +10,7 @@ Semverq is a cli utility for:
 
 ## Validation
 
-semverq always validates the input string as a semver.
+For `-i` option, semverq validates the input string as a semver.
 
 ```
 $ semverq -i '1.2.3-beta+dev-armhf'
@@ -24,6 +24,14 @@ $ semverq -i '1.2.3-beta+dev+armhf'
 Error: unexpected character '+' after build metadata
 $ echo $?
 1
+```
+
+If the `-i` option is not specified, semverq reads string from standard input.
+
+```
+$ semverq <<<'1.2.3-input+stdin'
+$ echo $?
+0
 ```
 
 ## Convert to json
