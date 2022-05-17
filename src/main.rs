@@ -15,6 +15,7 @@ fn process_query(version: &semver::Version, query: &str) -> String {
         .replace(".patch", &format!("{}", version.patch))
         .replace(".version-core", &format!("{}", version_core(&version)))
         .replace(".pre-release", &format!("{}", version.pre))
+        .replace(".pre", &format!("{}", version.pre))
         .replace(".build", &format!("{}", version.build))
 }
 
