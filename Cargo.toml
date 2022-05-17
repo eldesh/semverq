@@ -1,0 +1,8 @@
+[package]
+name = "semverq"
+version = "0.1.0"
+authors = ["eldesh <nephits@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+semver = "1.0.0"
