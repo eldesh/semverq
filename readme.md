@@ -6,7 +6,7 @@ Semverq is a cli utility for:
 - Accessing semver structures
 - Convert semver to json
 
-# Examples
+# Features
 
 ## Validation
 
@@ -26,7 +26,7 @@ $ echo $?
 1
 ```
 
-## Convert to a json
+## Convert to json
 
 For `-j` option, semverq converts the input to json.
 
@@ -56,14 +56,36 @@ $ semverq -j -i '1.2.3'
 
 ## Accessing to parts
 
+For `-q` option, access semver parts.
+
+Get only major version:
+
 ```
 $ semverq -q '.major' -i '1.2.3-beta+36a1d2f'
 1
 ```
+
+Build a json object with `pre-release` and `build`:
 
 ```
 $ semverq -q '{ "pre-release": .pre-release, "build": .build }' -i '1.2.3-beta+36a1d2f'
 { "pre-release": "beta", "build": "36a1d2f" }
 ```
 
+### Accessor
+
+Supported accessors are below:
+
+- '.major'
+  Major version.
+- '.minor'
+  Minor version.
+- '.patch'
+  Patch version.
+- '.pre-release' or '.pre'
+  pre-release version.
+- '.build'
+  Build metadata.
+- '.version-core'
+  Shorthand for '.major..minor..patch'.
 
