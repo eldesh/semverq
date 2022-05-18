@@ -21,9 +21,9 @@ $ echo $?
 
 ```
 $ semverq -i '1.2.3-beta+dev+armhf'
-Error: unexpected character '+' after build metadata
+invalid format as semver: 1.2.3-beta+dev+armhf
 $ echo $?
-1
+150
 ```
 
 If the `-i` option is not specified, semverq reads string from standard input.
@@ -118,7 +118,16 @@ Not matching case:
 $ semverq -m '^1.2.1, 1.3.*' -i '1.2.3-beta+dev-armhf'
 Version (1.2.3-beta+dev-armhf) does not match that requirement (^1.2.1, 1.3.*).
 $ echo $?
-1
+152
+```
+
+Invalid requirement:
+
+```
+$ semverq -m '>1.2.1, <=2.0.0.' -i '1.2.3'
+invalid format as version requirement: >1.2.1, <=2.0.0.
+$ echo $?
+151
 ```
 
 

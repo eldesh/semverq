@@ -4,6 +4,9 @@ use anyhow::{Context, Result};
 use clap::{Arg, Command};
 use serde_json::{self as json, json};
 
+mod error;
+use crate::error::Error;
+
 fn version_core(version: &semver::Version) -> String {
     format!("{}.{}.{}", version.major, version.minor, version.patch)
 }
@@ -19,8 +22,8 @@ fn process_query(version: &semver::Version, query: &str) -> String {
         .replace(".build", &format!("{}", version.build))
 }
 
-fn main() -> Result<()> {
-    let m = Command::new("semverq")
+fn cli(prog: &str) -> Command<'static> {
+    Command::new(prog)
         .version(env!("CARGO_PKG_VERSION"))
         .about("A cli utility for validating semver, accessing semver structure and converting to json.")
         .arg(
@@ -49,10 +52,51 @@ fn main() -> Result<()> {
                 .conflicts_with("query")
                 .help("checking for a match"),
         )
-        .get_matches();
+}
 
+fn main() {
+    let m = cli("semverq").get_matches();
+
+    let code = match process(m) {
+        Ok(()) => 0,
+        Err(err) => {
+            if let Some(err) = err.downcast_ref::<Error>() {
+                use Error::*;
+                eprintln!("{}", err);
+                match err {
+                    InvalidSemver { .. } => 150,
+                    InvalidVersionReq { .. } => 151,
+                    NotMatchReq { .. } => 152,
+                }
+            } else {
+                1
+            }
+        }
+    };
+    std::process::exit(code)
+}
+
+fn parse_semver(text: &str) -> Result<semver::Version> {
+    Ok(
+        semver::Version::parse(text).map_err(|source| Error::InvalidSemver {
+            input: text.to_string(),
+            source,
+        })?,
+    )
+}
+
+fn parse_semver_req(text: &str) -> Result<semver::VersionReq> {
+    Ok(
+        semver::VersionReq::parse(text).map_err(|source| Error::InvalidVersionReq {
+            input: text.to_string(),
+            source,
+        })?,
+    )
+}
+
+fn process(m: clap::ArgMatches) -> Result<()> {
     let version = if let Some(input) = m.value_of("input") {
-        semver::Version::parse(&input)?
+        parse_semver(&input)?
     } else {
         let stdin = io::stdin();
         let mut stdin = stdin.lock();
@@ -60,7 +104,7 @@ fn main() -> Result<()> {
             .fill_buf()
             .with_context(|| "Failed to get the contents from the inner buffer of the stdin.")?;
 
-        semver::Version::parse(&String::from_utf8_lossy(bytes).trim_end())?
+        parse_semver(&String::from_utf8_lossy(bytes).trim_end())?
     };
 
     if m.is_present("to-json") {
@@ -78,18 +122,11 @@ fn main() -> Result<()> {
     } else if let Some(query) = m.value_of("query") {
         println!("{}", process_query(&version, &query));
     } else if let Some(match_str) = m.value_of("match") {
-        let req = semver::VersionReq::parse(&match_str)?;
-        if req.matches(&version) {
-            std::process::exit(0)
-        } else {
-            eprintln!(
-                "Version ({}) does not match that requirement ({}).",
-                version, req
-            );
-            std::process::exit(1)
+        let req = parse_semver_req(&match_str)?;
+        if !req.matches(&version) {
+            Err(Error::NotMatchReq { version, req })?;
         }
     }
-
     Ok(())
 }
 
