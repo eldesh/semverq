@@ -41,6 +41,14 @@ fn main() -> Result<()> {
                 .conflicts_with("to-json")
                 .help("expand accessors"),
         )
+        .arg(
+            Arg::new("match")
+                .short('m')
+                .takes_value(true)
+                .conflicts_with("to-json")
+                .conflicts_with("query")
+                .help("checking for a match"),
+        )
         .get_matches();
 
     let version = if let Some(input) = m.value_of("input") {
@@ -69,6 +77,17 @@ fn main() -> Result<()> {
         );
     } else if let Some(query) = m.value_of("query") {
         println!("{}", process_query(&version, &query));
+    } else if let Some(match_str) = m.value_of("match") {
+        let req = semver::VersionReq::parse(&match_str)?;
+        if req.matches(&version) {
+            std::process::exit(0)
+        } else {
+            eprintln!(
+                "Version ({}) does not match that requirement ({}).",
+                version, req
+            );
+            std::process::exit(1)
+        }
     }
 
     Ok(())

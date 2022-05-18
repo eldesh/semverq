@@ -97,5 +97,28 @@ Supported accessors are below:
 - `.version-core`
   Shorthand for `.major..minor..patch`.
 
+## Checking for a match
+
+For `-m` option, semverq checking for a match to given requirement.
+The requirement is constructed from comma separated version constraint.
+This matching syntax and rules are same as in [Rust's package system](https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html).
+
+
+Matching case:
+
+```
+$ semverq -m '>1.2.1, <=2.0.0' -i '1.2.3'
+$ echo $?
+0
+```
+
+Not matching case:
+
+```
+$ semverq -m '^1.2.1, 1.3.*' -i '1.2.3-beta+dev-armhf'
+Version (1.2.3-beta+dev-armhf) does not match that requirement (^1.2.1, 1.3.*).
+$ echo $?
+1
+```
 
 
