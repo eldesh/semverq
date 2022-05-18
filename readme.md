@@ -84,16 +84,18 @@ $ semverq -q '{ "pre-release": .pre-release, "build": .build }' -i '1.2.3-beta+3
 
 Supported accessors are below:
 
-- '.major'
+- `.major`
   Major version.
-- '.minor'
+- `.minor`
   Minor version.
-- '.patch'
+- `.patch`
   Patch version.
-- '.pre-release' or '.pre'
+- `.pre-release` or `.pre`
   pre-release version.
-- '.build'
+- `.build`
   Build metadata.
-- '.version-core'
-  Shorthand for '.major..minor..patch'.
+- `.version-core`
+  Shorthand for `.major..minor..patch`.
+
+
 
