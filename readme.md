@@ -76,7 +76,7 @@ $ semverq -q '.major' -i '1.2.3-beta+36a1d2f'
 Build a json object with `pre-release` and `build`:
 
 ```
-$ semverq -q '{ "pre-release": .pre-release, "build": .build }' -i '1.2.3-beta+36a1d2f'
+$ semverq -q '{ "pre-release": ".pre-release", "build": ".build" }' -i '1.2.3-beta+36a1d2f'
 { "pre-release": "beta", "build": "36a1d2f" }
 ```
 
