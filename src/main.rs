@@ -16,7 +16,7 @@ fn process_query(version: &semver::Version, query: &str) -> String {
         .replace(".major", &format!("{}", version.major))
         .replace(".minor", &format!("{}", version.minor))
         .replace(".patch", &format!("{}", version.patch))
-        .replace(".version-core", &format!("{}", version_core(&version)))
+        .replace(".version-core", &version_core(version))
         .replace(".pre-release", &format!("{}", version.pre))
         .replace(".pre", &format!("{}", version.pre))
         .replace(".build", &format!("{}", version.build))
@@ -96,7 +96,7 @@ fn parse_semver_req(text: &str) -> Result<semver::VersionReq> {
 
 fn process(m: clap::ArgMatches) -> Result<()> {
     let version = if let Some(input) = m.value_of("input") {
-        parse_semver(&input)?
+        parse_semver(input)?
     } else {
         let stdin = io::stdin();
         let mut stdin = stdin.lock();
@@ -104,7 +104,7 @@ fn process(m: clap::ArgMatches) -> Result<()> {
             .fill_buf()
             .with_context(|| "Failed to get the contents from the inner buffer of the stdin.")?;
 
-        parse_semver(&String::from_utf8_lossy(bytes).trim_end())?
+        parse_semver(String::from_utf8_lossy(bytes).trim_end())?
     };
 
     if m.is_present("to-json") {
@@ -120,11 +120,11 @@ fn process(m: clap::ArgMatches) -> Result<()> {
             .unwrap()
         );
     } else if let Some(query) = m.value_of("query") {
-        println!("{}", process_query(&version, &query));
+        println!("{}", process_query(&version, query));
     } else if let Some(match_str) = m.value_of("match") {
-        let req = parse_semver_req(&match_str)?;
+        let req = parse_semver_req(match_str)?;
         if !req.matches(&version) {
-            Err(Error::NotMatchReq { version, req })?;
+            return Err(Error::NotMatchReq { version, req }.into());
         }
     }
     Ok(())
@@ -136,11 +136,13 @@ mod tests {
 
     #[test]
     fn query() {
-        let query = r#"{ "pre-release": .pre-release, "build": .build }"#;
+        use serde_json::Value;
+        let query = r#"{ "pre-release": ".pre-release", "build": ".build" }"#;
         let input = semver::Version::parse("1.2.3-beta+36a1d2f").unwrap();
         assert_eq!(
-            &process_query(input, query),
-            r#"{ "pre-release": "beta", "build": "36a1d2f" }"#
+            serde_json::from_str::<Value>(&process_query(&input, query)).unwrap(),
+            serde_json::from_str::<Value>(r#"{ "pre-release": "beta", "build": "36a1d2f" }"#)
+                .unwrap()
         )
     }
 }
