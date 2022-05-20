@@ -4,9 +4,10 @@ description = "a cli tool for accessing semver structure"
 version = "0.1.0"
 authors = ["eldesh <nephits@gmail.com>"]
 edition = "2018"
-readme = "readme.md"
 license = "MIT"
+documentation = "https://docs.rs/semverq"
 repository = "https://github.com/eldesh/semverq"
+readme = "readme.md"
 
 [dependencies]
 semver = "1.0.0"
