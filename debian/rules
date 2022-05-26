@@ -1,0 +1,23 @@
+#!/usr/bin/make -f
+#
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+
+clean::
+	-[ -e $(HOME)/.cargo/env ] && . $(HOME)/.cargo/env && cargo clean || :
+	-$(RM) rustup.sh
+
+rustup.sh:
+	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > $@
+	chmod +x $@
+
+.PHONY: setup_rustc
+setup_rustc: rustup.sh
+	./rustup.sh -v -y --profile minimal --default-toolchain $(shell cat ./rust-toolchain)
+
+build/semverq:: setup_rustc
+	. $(HOME)/.cargo/env && cargo build -v --release
+
+install/semverq:: setup_rustc
+	. $(HOME)/.cargo/env && cargo install --path $(CURDIR) --root $(CURDIR)/debian/semverq
+
