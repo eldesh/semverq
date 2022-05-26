@@ -1,0 +1,16 @@
+services:
+  debbuilder:
+    image: eldesh/semverq-deb-builder:${IMAGE_VERSION}
+    container_name: debbuilder
+    build:
+      context: ./context
+      labels:
+        org.opencontainers.image.ref.name: "semverq-deb-builder"
+        org.opencontainers.image.title: "Semverq Deb Package Builder"
+      args:
+        - IMAGE_VERSION
+    environment:
+      DEB_VERSION: "${DEB_VERSION}"
+    volumes:
+      - .:/semverq
+    working_dir: /semverq
