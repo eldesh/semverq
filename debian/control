@@ -1,0 +1,25 @@
+Source: semverq
+Section: contrib/devel
+Priority: optional
+Maintainer: eldesh <nephits@gmail.com>
+Build-Depends: cdbs, debhelper (>= 12)
+Standards-Version: 4.5.1
+Vcs-Git: https://github.com/eldesh/semverq -b master
+Vcs-Browser: https://github.com/eldesh/semverq
+Rules-Requires-Root: no
+
+Package: semverq
+Architecture: any
+Multi-Arch: allowed
+Depends:
+ ${misc:Depends}
+Recommends:
+Suggests:
+Provides:
+Built-Using:
+XB-X-Cargo-Built-Using:
+Description: A CLI utility for parsing semver
+ A CLI utility for:
+ - Validating semver format
+ - Accessing semver structures
+ - Convert semver to json
