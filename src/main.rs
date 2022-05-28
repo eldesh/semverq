@@ -114,8 +114,8 @@ fn process(m: clap::ArgMatches) -> Result<()> {
                 "major": version.major,
                 "minor": version.minor,
                 "patch": version.patch,
-                "pre-release": version.pre.as_str(),
-                "build": version.build.as_str()
+                "pre-release": if version.pre.is_empty() { json!(null) } else { json!(version.pre.as_str()) },
+                "build": if version.build.is_empty() { json!(null) } else { json!(version.build.as_str()) }
             }))
             .unwrap()
         );
