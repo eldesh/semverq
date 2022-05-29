@@ -1,0 +1,36 @@
+name: package
+
+on:
+  push
+
+jobs:
+  package:
+    runs-on: ubuntu-18.04
+    env:
+      DEBIAN_FRONTEND: noninteractive
+    name: packaging semverq as a deb package
+    steps:
+      - uses: actions/checkout@v2
+      - name: set environment variables
+        run: cat .env >> $GITHUB_ENV
+
+      - name: install dependencies of packaging
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends devscripts cdbs debhelper build-essential curl
+
+      - name: packaging
+        run: |
+          set -eux
+          ln -s $(pwd) ../semverq-$DEB_VERSION
+          cd ../semverq-$DEB_VERSION
+          debuild -uc -us
+          mkdir package
+          find ../ -maxdepth 1 -type f -exec mv {} package/ \;
+
+      - name: upload the deb package files
+        uses: actions/upload-artifact@v3
+        with:
+          name: semverq-deb
+          path:
+            package/
