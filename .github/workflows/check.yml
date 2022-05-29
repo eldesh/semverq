@@ -41,3 +41,21 @@ jobs:
       - name: build
         run: cargo build
 
+  package:
+    runs-on: ubuntu-18.04
+    needs: [test]
+    name: packaging semverq as a deb package
+    steps:
+      - uses: actions/checkout@v2
+      - name: set environment variables
+        run: cat .env >> $GITHUB_ENV
+      - name: install dependencies of packaging
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends devscripts cdbs debhelper build-essential curl
+      - name: packaging
+        run: |
+          ln -s $(pwd) $GITHUB_WORKSPACE/semverq-${{ env.DEB_VERSION }}
+          cd $GITHUB_WORKSPACE/semverq-${{ env.DEB_VERSION }}
+          debuild -uc -us
+
