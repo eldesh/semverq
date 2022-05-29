@@ -130,4 +130,12 @@ $ echo $?
 151
 ```
 
+# Packaging
+
+For packaging semverq as a deb package:
+
+```sh
+docker-compose -f compose.yml run debbuilder
+```
+
 
