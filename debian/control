@@ -2,7 +2,7 @@ Source: semverq
 Section: contrib/devel
 Priority: optional
 Maintainer: eldesh <nephits@gmail.com>
-Build-Depends: cdbs, debhelper (>= 12)
+Build-Depends: cdbs, debhelper (>= 11)
 Standards-Version: 4.5.1
 Vcs-Git: https://github.com/eldesh/semverq -b master
 Vcs-Browser: https://github.com/eldesh/semverq
