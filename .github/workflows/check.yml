@@ -43,7 +43,9 @@ jobs:
 
   package:
     runs-on: ubuntu-18.04
-    needs: [test]
+    needs: test
+    env:
+      DEBIAN_FRONTEND: noninteractive
     name: packaging semverq as a deb package
     steps:
       - uses: actions/checkout@v2
