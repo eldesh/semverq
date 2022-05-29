@@ -1,3 +1,4 @@
+version: '3.7'
 services:
   debbuilder:
     image: eldesh/semverq-deb-builder:${IMAGE_VERSION}
