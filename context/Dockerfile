@@ -19,7 +19,7 @@ LABEL org.opencontainers.image.base.name="debian:bullseye"
 
 RUN apt-get update \
  && apt-get install --no-install-recommends -y \
-      sudo apt-utils git devscripts curl cdbs debhelper build-essential \
+      sudo apt-utils git devscripts curl cdbs debhelper build-essential pandoc \
  ## avoid warning:
  ## > Use of uninitialized value $v in substitution (s///) at Dh_Lib.pm line 1729, <$fd> line 11.
  && sed -i -e '1729i\    return if not defined($v);' /usr/share/perl5/Debian/Debhelper/Dh_Lib.pm \

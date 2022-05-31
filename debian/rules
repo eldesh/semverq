@@ -15,6 +15,9 @@ rustup.sh:
 setup_rustc: rustup.sh
 	./rustup.sh -v -y --profile minimal --default-toolchain $(shell cat ./rust-toolchain)
 
+build-indep/semverq::
+	$(MAKE) man
+
 build/semverq:: setup_rustc
 	. $(HOME)/.cargo/env && cargo build -v --release
 
