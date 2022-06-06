@@ -3,6 +3,9 @@ name: check
 on:
   push
 
+env:
+  DEBIAN_FRONTEND: noninteractive
+
 jobs:
   test:
     runs-on: ubuntu-18.04
@@ -41,4 +44,15 @@ jobs:
 
       - name: build
         run: cargo build
+
+  make-man:
+    runs-on: ubuntu-18.04
+    name: build manual of semverq
+    steps:
+      - uses: actions/checkout@v2
+      - name: install prerequiresites
+        run: sudo apt-get install pandoc
+
+      - name: make manual
+        run: make man
 
